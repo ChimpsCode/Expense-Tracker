@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Finance App</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url(build1.jpg) no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      color: #333;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    p {
+      margin-bottom: 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    input {
+      width: calc(100% - 20px);
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    button {
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .income-expense {
+      display: flex;
+      justify-content: space-between;
+      margin: 20px 0;
+    }
+
+    .box {
+      background: #f1f1f1;
+      padding: 15px;
+      border-radius: 8px;
+      width: 48%;
+      text-align: center;
+    }
+
+    .income-box {
+      background: #e0f7fa;
+      color: #007BFF;
+    }
+
+    .expense-box {
+      background: #ffebee;
+      color: #D32F2F;
+    }
+
+    .history ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .history li {
+      background: #f9f9f9;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history li span {
+      color: #D32F2F;
+      cursor: pointer;
+    }
+
+    .add-transaction label {
+      display: block;
+      text-align: left;
+      margin: 10px 0 5px;
+      font-size: 14px;
+    }
+
+    .add-transaction input {
+      margin-bottom: 15px;
+    }
+
+    #dashboard-page button {
+      margin-top: 20px;
+    }
+
+    a {
+      color: #007BFF;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!---------------- Login Pageeeeee----------------- -->
+  <div class="container" id="login-page">
+    <h1>Welcome to Finance Tracker</h1>
+    <p>Please log in to access your account.</p>
+    <form id="login-form">
+      <input type="text" id="username" placeholder="Username" required>
+      <input type="password" id="password" placeholder="Password" required>
+      <button type="button" onclick="handleLogin()">Login</button>
+      <p>
+        <a href="#" onclick="showCreateAccount()">Create New Account</a> |
+        <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- ------------------Create Account Page ------------------------->
+  <div class="container hidden" id="create-account-page">
+    <h1>Create Your Account</h1>
+    <form id="create-account-form">
+      <input type="text" id="first-name" placeholder="First Name" required>
+      <input type="text" id="middle-name" placeholder="Middle Name (Optional)">
+      <input type="text" id="last-name" placeholder="Last Name" required>
+      <input type="text" id="new-username" placeholder="Username" required>
+      <input type="password" id="new-password" placeholder="Password" required>
+      <button type="button" onclick="handleCreateAccount()">Create Account</button>
+    </form>
+    <p><a href="#" onclick="showLoginPage()">Back to Login</a></p>
+  </div>
+
+  <!-- ----------------Forgot Password Page ------------------------->
+  <div class="container hidden" id="forgot-password-page">
+    <h1>Forgot Password</h1>
+    <form id="forgot-password-form">
+      <input type="email" id="email" placeholder="Enter your email address" required>
+      <button type="button" onclick="returnToLogin()">Done</button>
+    </form>
+    <p><a href="#" onclick="showLoginPage()">Back to Login</a></p>
+  </div>
+
+  <!-- ------------------------ -Dashboard Page ------------------>
+  <div class="container hidden" id="dashboard-page">
+    <h1>Dashboard Overview</h1>
+    <div class="balance">
+      <h2>Balance</h2>
+      <p id="balance" class="amount">₱0.00</p>
+    </div>
+    <div class="income-expense">
+      <div class="box income-box">
+        <h3>Income</h3>
+        <p id="income" class="amount">₱0.00</p>
+      </div>
+      <div class="box expense-box">
+        <h3>Expense</h3>
+        <p id="expense" class="amount">₱0.00</p>
+      </div>
+    </div>
+    <div class="history">
+      <h2>Transaction History</h2>
+      <ul id="transaction-history">
+        <li>No transactions yet.</li>
+      </ul>
+    </div>
+    <div class="add-transaction">
+      <h2>Add New Transaction</h2>
+      <label>Text</label>
+      <input type="text" id="transaction-text" placeholder="Enter product name (e.g., Bread)" required>
+      <label>Amount</label>
+      <input type="number" id="transaction-amount" placeholder="Enter amount (e.g., +5 or -5)" required>
+      <button onclick="addTransaction()">Add Transaction</button>
+    </div>
+    <button onclick="logout()">Back to Login</button>
+  </div>
+<!--------Script codeS ------------->
+  <script>
+    let balance = 0;
+    let income = 0;
+    let expense = 0;
+
+    const predefinedUsername = "123";
+    const predefinedPassword = "123";
+
+    function handleLogin() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (username === predefinedUsername && password === predefinedPassword) {
+        document.getElementById("login-page").classList.add("hidden");
+        document.getElementById("dashboard-page").classList.remove("hidden");
+      } else {
+        alert("Invalid username or password.");
+      }
+    }
+
+    function showCreateAccount() {
+      document.getElementById("login-page").classList.add("hidden");
+      document.getElementById("create-account-page").classList.remove("hidden");
+    }
+
+    function showForgotPassword() {
+      document.getElementById("login-page").classList.add("hidden");
+      document.getElementById("forgot-password-page").classList.remove("hidden");
+    }
+
+    function showLoginPage() {
+      document.getElementById("create-account-page").classList.add("hidden");
+      document.getElementById("forgot-password-page").classList.add("hidden");
+      document.getElementById("login-page").classList.remove("hidden");
+    }
+
+    function handleCreateAccount() {
+      const newUsername = document.getElementById("new-username").value;
+      const newPassword = document.getElementById("new-password").value;
+
+      if (newUsername && newPassword) {
+        alert("Account created successfully!");
+        document.getElementById("create-account-page").classList.add("hidden");
+        document.getElementById("dashboard-page").classList.remove("hidden");
+      } else {
+        alert("Please fill out all fields.");
+      }
+    }
+
+    function returnToLogin() {
+      alert("Password reset process initiated.");
+      showLoginPage();
+    }
+
+    function addTransaction() {
+      const text = document.getElementById("transaction-text").value;
+      const amount = parseFloat(document.getElementById("transaction-amount").value);
+
+      if (!text || isNaN(amount)) {
+        alert("Please provide valid text and amount.");
+        return;
+      }
+
+      const history = document.getElementById("transaction-history");
+      if (history.children[0].textContent === "No transactions yet.") {
+        history.innerHTML = "";
+      }
+
+      const listItem = document.createElement("li");
+      listItem.textContent = `${text}: ₱${amount.toFixed(2)}`;
+      history.appendChild(listItem);
+
+      if (amount > 0) {
+        income += amount;
+        document.getElementById("income").textContent = `₱${income.toFixed(2)}`;
+      }
+      else {
+        expense += Math.abs(amount);
+        document.getElementById("expense").textContent = `₱${expense.toFixed(2)}`;
+      }
+
+      balance += amount;
+      document.getElementById("balance").textContent = `₱${balance.toFixed(2)}`;
+
+      // Clear the input fields
+      document.getElementById("transaction-text").value = "";
+      document.getElementById("transaction-amount").value = "";
+    }
+
+    function logout() {
+      document.getElementById("dashboard-page").classList.add("hidden");
+      document.getElementById("login-page").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
